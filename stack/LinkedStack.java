@@ -13,6 +13,10 @@ public class LinkedStack<T> implements Stack<T> {
 
     public int push(T entry) {
 
+        if (entry == null) {
+            return -1;
+        }
+
         Node<T> newTop = new Node<T>(entry);
 
         if (size > 0) {
@@ -25,14 +29,38 @@ public class LinkedStack<T> implements Stack<T> {
     }
 
     public T peek() {
-        return null;
+        return (size > 0) ? top.getData() : null;
     }
 
     public T pop() {
-        return null;
+        T topData = peek();
+
+        if (topData != null) {
+            top = top.getNextNode();
+            size--;
+        }
+
+        return topData;
     }
 
     public int search(T entry) {
+
+        if (size == 0 || entry == null) {
+            return -1;
+        }
+
+        Node<T> current = top;
+        int index = 0;
+
+        while (current != null) {
+            if (current.getData().equals(entry)) {
+                return index;
+            }
+
+            current = current.getNextNode();
+            index++;
+        }
+
         return -1;
     }
 
@@ -41,6 +69,7 @@ public class LinkedStack<T> implements Stack<T> {
 
         while (current != null) {
             System.out.print(current.getData());
+
             current = current.getNextNode();
 
             if (current != null) {
