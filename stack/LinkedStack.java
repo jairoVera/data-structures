@@ -1,7 +1,7 @@
 public class LinkedStack<T> implements Stack<T> {
 
-    Node<T> top = null;
-    int size = 0;
+    private Node<T> top = null;
+    private int size = 0;
 
     public int getSize() {
         return size;
@@ -43,7 +43,7 @@ public class LinkedStack<T> implements Stack<T> {
         return topData;
     }
 
-    public int search(T entry) {
+    public int contains(T entry) {
 
         if (size == 0 || entry == null) {
             return -1;
