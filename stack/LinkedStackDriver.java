@@ -35,8 +35,8 @@ public class LinkedStackDriver {
         System.out.println("Pop on empty stack: " + stack.pop());
         System.out.println("Is stack still empty? " + stack.isEmpty());
 
-        // Test search
-        System.out.println("\nTEST SEARCH");
+        // Test contains
+        System.out.println("\nTEST CONTAINS");
         stack.push(5);
         stack.push(4);
         stack.push(3);
@@ -44,14 +44,14 @@ public class LinkedStackDriver {
         stack.push(1);
         stack.push(0);
         stack.push(9001);
-        System.out.println("Index of 0 == " + stack.search(0));
-        System.out.println("Index of 1 == " + stack.search(1));
-        System.out.println("Index of 2 == " + stack.search(2));
-        System.out.println("Index of 3 == " + stack.search(3));
-        System.out.println("Index of 4 == " + stack.search(4));
-        System.out.println("Index of 5 == " + stack.search(5));
-        System.out.println("Index of 9001 == " + stack.search(9001));
-        System.out.println("Index of 90011 == " + stack.search(90011));
+        System.out.println("Index of 0 == " + stack.contains(0));
+        System.out.println("Index of 1 == " + stack.contains(1));
+        System.out.println("Index of 2 == " + stack.contains(2));
+        System.out.println("Index of 3 == " + stack.contains(3));
+        System.out.println("Index of 4 == " + stack.contains(4));
+        System.out.println("Index of 5 == " + stack.contains(5));
+        System.out.println("Index of 9001 == " + stack.contains(9001));
+        System.out.println("Index of 90011 == " + stack.contains(90011));
 
         // Test prit
         stack.print();
