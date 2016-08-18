@@ -1,10 +1,11 @@
 public interface Queue<T> {
 
     public int getSize();
-    public boolean isEmpty();
-
     public int enqueue(T entry);
-    public int dequeue();
-
+    public T   dequeue();
+    public T   peekFront();
     public int contains(T entry);
+    public int clear();
+    public boolean isEmpty();
+    public String  toString();
 }
