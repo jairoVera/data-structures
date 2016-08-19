@@ -1,3 +1,5 @@
+import java.lang.Comparable;
+
 public class LinkedHashTable<K, V> implements Hashtable<K, V> {
 
     private HashtableEntry<K, V>[] hashtable = null;
@@ -23,12 +25,7 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
             return numberPairs;
         }
 
-        // Get hash index
-        int index = inKey.hashCode() % hashtable.length;
-
-        if (index < 0) {
-            index += hashtable.length;
-        }
+        int index = getHashIndex(inKey);
 
         // Case 1: Bucket is empty
         if (hashtable[index] == null) {
@@ -57,15 +54,40 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
 
         loadFactor = numberPairs / hashtable.length;
 
-        if (loadFactor < MAX_LOAD_FACTOR) {
+        if (loadFactor >= MAX_LOAD_FACTOR) {
             rehash();
         }
 
         return numberPairs;
     }
 
-    public V get(K key) {
-        return null;
+    public V get(K inKey) {
+
+        // Check if key is null
+        if (inKey == null) {
+            return null;
+        }
+
+        int index = getHashIndex(inKey);
+
+        // Case 1: Bucket is empty
+        if (hashtable[index] == null) {
+            return null;
+        }
+        // Case 2: Bucket is non-empty
+        else {
+            HashtableEntry<K, V> current = hashtable[index];
+
+            while (current != null) {
+                if (current.getKey().equals(inKey)) {
+                    return current.getValue();
+                }
+
+                current = current.getNextEntry();
+            }
+
+            return null;
+        }
     }
 
     public K remove(K inKey) {
@@ -73,7 +95,30 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
     }
 
     public boolean containsKey(K inKey) {
-        return false;
+
+        // Check if key is null
+        if (inKey == null) {
+            return false;
+        }
+
+        int index = getHashIndex(inKey);
+
+        if (hashtable[index] == null) {
+            return false;
+        }
+        else {
+            HashtableEntry<K, V> current = hashtable[index];
+
+            while (current != null) {
+                if (current.getKey().equals(inKey)) {
+                    return true;
+                }
+
+                current = current.getNextEntry();
+            }
+
+            return false;
+        }
     }
 
     public boolean containsValue(V inValue) {
@@ -86,6 +131,11 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
 
     private void rehash() {
 
+    }
+
+    private int getHashIndex(K inKey) {
+        int index = inKey.hashCode() % hashtable.length;
+        return (index < 0) ? (index + hashtable.length) : index;
     }
 
     private int getNextPrime(int inSize) {
