@@ -11,6 +11,7 @@ public class LinkedHashtableDriver {
         System.out.println(hashtable);
         System.out.println("----------------------");
 
+        hashtable.put("Jairo Vera", "***-***-****");
         System.out.println("Jairo Vera: " + hashtable.get("Jairo Vera"));
         System.out.println("Fer Vera: " + hashtable.get("Fer Vera"));
         System.out.println("Antonio Vera: " + hashtable.get("Antonio Vera"));

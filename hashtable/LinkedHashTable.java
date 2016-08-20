@@ -58,6 +58,9 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         return numberPairs;
     }
 
+    /** @return the value corresponding to the key if the key is in the hashtable,
+                or returns null if they key is null or if the key is not in
+                the hashtable */
     public V get(K inKey) {
 
         if (inKey == null) {
@@ -77,6 +80,9 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         }
     }
 
+    /** Removes the key-value pair corresponding to the key parameter
+        @return the value if the key is in the hashtable,
+                null if the key is null or if the key is not in the hashtable */
     public V remove(K inKey) {
 
         if (inKey == null) {
@@ -121,15 +127,33 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
     }
 
     public boolean containsKey(K inKey) {
-        return false;
+        return (get(inKey) != null);  // get is logically equivalent to containsKey
     }
 
     public boolean containsValue(V inValue) {
+
+        if (inValue == null) {
+            return false;
+        }
+
+        for (HashtableEntry<K, V> entry: hashtable) {
+            while (entry != null) {
+
+                if (entry.getValue().equals(inValue)) {
+                    return true;
+                }
+
+                entry = entry.getNextEntry();
+            }
+        }
+
         return false;
     }
 
     public void clear() {
-
+        hashtable = new HashtableEntry[DEFAULT_SIZE];
+        numberPairs = 0;
+        loadFactor  = 0;
     }
 
     public String toString() {
