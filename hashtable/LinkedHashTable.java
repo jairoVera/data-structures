@@ -1,10 +1,10 @@
-import java.lang.Comparable;
+import java.lang.StringBuilder;
 
 public class LinkedHashTable<K, V> implements Hashtable<K, V> {
 
     private HashtableEntry<K, V>[] hashtable = null;
     private int numberPairs = 0;
-    private int loadFactor  = 0;
+    private double loadFactor  = 0;
 
     private static final int DEFAULT_SIZE = 101;
     private static final double MAX_LOAD_FACTOR = 0.5;
@@ -18,9 +18,11 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         hashtable = new HashtableEntry[getNextPrime(inMinSize)];
     }
 
+    /** Adds the key-value pair into the hashtable. If the key is already
+        in the hashtable, then the value is updated.
+        @return updated number of pairs in the hashtable */
     public int put(K inKey, V inValue) {
 
-        // Check for null key/value
         if (inKey == null || inValue == null) {
             return numberPairs;
         }
@@ -34,25 +36,20 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         }
         // Case 2: Bucket is non-empty
         else {
-            HashtableEntry<K, V> current = hashtable[index];
+            HashtableEntry<K, V> entry = getEntry(index, inKey);
 
-            while (current != null) {
-
-                if (current.getKey().equals(inKey)) {
-                    current.setValue(inValue);
-                    break;
-                }
-
-                current = current.getNextEntry();
+            if (entry != null) {
+                entry.setValue(inValue);
             }
-
-            HashtableEntry<K, V> newEntry = new HashtableEntry<K, V>(inKey, inValue);
-            newEntry.setNextEntry(hashtable[index]);
-            hashtable[index] = newEntry;
-            numberPairs++;
+            else {
+                HashtableEntry<K, V> newEntry = new HashtableEntry<K, V>(inKey, inValue);
+                newEntry.setNextEntry(hashtable[index]);
+                hashtable[index] = newEntry;
+                numberPairs++;
+            }
         }
 
-        loadFactor = numberPairs / hashtable.length;
+        loadFactor = (double)numberPairs / hashtable.length;
 
         if (loadFactor >= MAX_LOAD_FACTOR) {
             rehash();
@@ -63,7 +60,6 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
 
     public V get(K inKey) {
 
-        // Check if key is null
         if (inKey == null) {
             return null;
         }
@@ -76,49 +72,56 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         }
         // Case 2: Bucket is non-empty
         else {
-            HashtableEntry<K, V> current = hashtable[index];
+            HashtableEntry<K, V> entry = getEntry(index, inKey);
+            return (entry == null) ? null : entry.getValue();
+        }
+    }
 
-            while (current != null) {
-                if (current.getKey().equals(inKey)) {
-                    return current.getValue();
+    public V remove(K inKey) {
+
+        if (inKey == null) {
+            return null;
+        }
+
+        int index = getHashIndex(inKey);
+
+        // Case 1: Bucket is empty
+        if (hashtable[index] == null) {
+            return null;
+        }
+        // Case 2: Bucket is not empty
+        else {
+
+            // Check first entry
+            HashtableEntry<K, V> current = hashtable[index];
+            if (current.getKey().equals(inKey)) {
+                hashtable[index] = current.getNextEntry();
+                loadFactor = (double)--numberPairs / hashtable.length;
+                return current.getValue();
+            }
+
+            // Case 2b: Entry is in deep list
+            HashtableEntry<K, V> next = current.getNextEntry();
+
+            while (next != null) {
+                if (next.getKey().equals(inKey)) {
+
+                    V oldData = next.getValue();
+                    current.setNextEntry(next.getNextEntry());
+                    loadFactor = (double)--numberPairs / hashtable.length;
+                    return oldData;
                 }
 
                 current = current.getNextEntry();
+                next    = current.getNextEntry();
             }
 
             return null;
         }
     }
 
-    public K remove(K inKey) {
-        return null;
-    }
-
     public boolean containsKey(K inKey) {
-
-        // Check if key is null
-        if (inKey == null) {
-            return false;
-        }
-
-        int index = getHashIndex(inKey);
-
-        if (hashtable[index] == null) {
-            return false;
-        }
-        else {
-            HashtableEntry<K, V> current = hashtable[index];
-
-            while (current != null) {
-                if (current.getKey().equals(inKey)) {
-                    return true;
-                }
-
-                current = current.getNextEntry();
-            }
-
-            return false;
-        }
+        return false;
     }
 
     public boolean containsValue(V inValue) {
@@ -129,8 +132,42 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
 
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Number of pairs: ")
+          .append(numberPairs)
+          .append("\nLoadfactor: ")
+          .append(loadFactor)
+          .append("\n");
+
+        for (HashtableEntry<K, V> entry: hashtable) {
+            while (entry != null) {
+
+                sb.append(entry.getKey().toString())
+                  .append(": ")
+                  .append(entry.getValue().toString())
+                  .append("\n");
+
+                entry = entry.getNextEntry();
+            }
+        }
+
+        return sb.toString();
+    }
+
     private void rehash() {
 
+    }
+
+    private HashtableEntry<K, V> getEntry(int index, K inKey) {
+
+        HashtableEntry<K, V> current = hashtable[index];
+
+        while (current != null && !current.getKey().equals(inKey)) {
+            current = current.getNextEntry();
+        }
+
+        return current;
     }
 
     private int getHashIndex(K inKey) {
