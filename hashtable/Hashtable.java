@@ -7,5 +7,8 @@ public interface Hashtable<K, V> {
     public boolean containsKey(K inKey);
     public boolean containsValue(V inValue);
 
+    public int getSize();
+    public boolean isEmpty();
+
     public void clear();
 }

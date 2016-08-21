@@ -1,36 +1,16 @@
 public class LinkedHashtableDriver {
 
     public static void main(String[] args) {
+        // Create hashtable and test if it is empty
         Hashtable<String, String> hashtable = new LinkedHashTable<String, String>();
+        System.out.println("Hashtable created. Is it empty?: " + hashtable.isEmpty());
 
-        hashtable.put("Jairo Vera", "832-226-2002");
-        hashtable.put("Fer Vera", "832-491-3634");
-        hashtable.put("Antonio Vera", "281-438-3294");
-        hashtable.put("Maria Vera", "281-630-0186");
-
-        System.out.println(hashtable);
-        System.out.println("----------------------");
-
-        hashtable.put("Jairo Vera", "***-***-****");
-        System.out.println("Jairo Vera: " + hashtable.get("Jairo Vera"));
-        System.out.println("Fer Vera: " + hashtable.get("Fer Vera"));
-        System.out.println("Antonio Vera: " + hashtable.get("Antonio Vera"));
-        System.out.println("Maria Vera: " + hashtable.get("Maria Vera"));
-        System.out.println("Purple Guy: " + hashtable.get("Purple Guy"));
-        System.out.println("----------------------");
-
-        hashtable.remove("Jairo Vera");
-        System.out.println(hashtable);
-        hashtable.remove("Fer Vera");
-        System.out.println(hashtable);
-        hashtable.remove("Antonio Vera");
-        System.out.println(hashtable);
-        hashtable.remove("Maria Vera");
-        System.out.println(hashtable);
-        hashtable.remove("Maria Vera");
-        System.out.println(hashtable);
-
-        hashtable.put("Freddy Fazbear", "123-456-7890");
+        // Test put
+        System.out.println("\nTEST PUT");
+        System.out.println("put: new size is: " + hashtable.put("Jairo", "Tacos"));
+        System.out.println("put: new size is: " + hashtable.put("Fer", "Pizza"));
+        System.out.println("put: new size is: " + hashtable.put("Cesar", "Spaghetti"));
+        System.out.println("put: new size is: " + hashtable.put("Rina", "Pupusas"));
         System.out.println(hashtable);
     }
 }

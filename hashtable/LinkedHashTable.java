@@ -7,7 +7,7 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
     private double loadFactor  = 0;
 
     private static final int DEFAULT_SIZE = 101;
-    private static final double MAX_LOAD_FACTOR = 0.5;
+    private static final double MAX_LOAD_FACTOR = 0.75;
 
 
     public LinkedHashTable() {
@@ -58,7 +58,8 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         return numberPairs;
     }
 
-    /** @return the value corresponding to the key if the key is in the hashtable,
+    /** Returns the value corresponding to the key parameter
+    @return the value corresponding to the key if the key is in the hashtable,
                 or returns null if they key is null or if the key is not in
                 the hashtable */
     public V get(K inKey) {
@@ -126,10 +127,16 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         }
     }
 
+    /** Determines if the key is in the hashtable
+        @return true if the key is in the hashtable,
+                false otherwise */
     public boolean containsKey(K inKey) {
         return (get(inKey) != null);  // get is logically equivalent to containsKey
     }
 
+    /** Determines if the value is in the hashtable
+        @return true if the value is in the hashtable,
+                false otherwise */
     public boolean containsValue(V inValue) {
 
         if (inValue == null) {
@@ -150,12 +157,27 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         return false;
     }
 
+    public int getSize() {
+        return numberPairs;
+    }
+
+    public boolean isEmpty() {
+        return (numberPairs == 0);
+    }
+
+
+    /** Clears the hashtable */
     public void clear() {
         hashtable = new HashtableEntry[DEFAULT_SIZE];
         numberPairs = 0;
         loadFactor  = 0;
     }
 
+    /** Implemented toString() methods
+        @return a String representation of the hashtable that displays
+                the number of pairs in the hashtable, the loadfactor,
+                and a list of all pairs in the hashtable
+    */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Number of pairs: ")
@@ -179,10 +201,31 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         return sb.toString();
     }
 
+    /** Increases the length of the hashtable to the smallest prime that
+        is greater than double the original length, then adds the old entries
+        into the new hashtable */
     private void rehash() {
 
+        // Need to reset these values since we will use put method
+        loadFactor  = 0;
+        numberPairs = 0;
+
+        HashtableEntry<K, V>[] oldHashtable = hashtable;
+
+        int newSize = getNextPrime(2 * hashtable.length);
+        hashtable   = new HashtableEntry[newSize];
+
+        for (HashtableEntry<K, V> entry: oldHashtable) {
+            while (entry != null) {
+                put(entry.getKey(), entry.getValue());
+                entry = entry.getNextEntry();
+            }
+        }
     }
 
+    /** Helper method to retrieve an entry
+        @return HashtableEntry with the inKey or
+                null if the key is not the hashtable */
     private HashtableEntry<K, V> getEntry(int index, K inKey) {
 
         HashtableEntry<K, V> current = hashtable[index];
@@ -194,6 +237,7 @@ public class LinkedHashTable<K, V> implements Hashtable<K, V> {
         return current;
     }
 
+    /** @return the hash index corresponding to the key */
     private int getHashIndex(K inKey) {
         int index = inKey.hashCode() % hashtable.length;
         return (index < 0) ? (index + hashtable.length) : index;
